@@ -15,6 +15,7 @@ focoBt.addEventListener('click', () => {
     
 });
 
+
 curtoBt.addEventListener('click', () => {
     alterandoContexto('descanso-curto');
     curtoBt.classList.add('active')
