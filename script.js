@@ -16,46 +16,50 @@ const musicaPlay = new Audio('./sons/play.wav');
 const musicaTempoEsgotado = new Audio('./sons/beep.mp3')
 musica.loop = true;
 
-let tempoDecorridoEmSegundos = 5;
+let tempoDecorridoEmSegundos = 1500;
 let intervaloId = null;
 
 focoBt.addEventListener('click', () => {
-    alterandoContexto('foco');
-    focoBt.classList.add('active')
+  tempoDecorridoEmSegundos = 1500;
+  alterandoContexto('foco');
+  focoBt.classList.add('active')
 });
 
-
 curtoBt.addEventListener('click', () => {
-    alterandoContexto('descanso-curto');
-    curtoBt.classList.add('active')
+  tempoDecorridoEmSegundos = 300;
+  alterandoContexto('descanso-curto');
+  curtoBt.classList.add('active')
 });
 
 longoBt.addEventListener('click', () => {
-    alterandoContexto('descanso-longo');
-    longoBt.classList.add('active')
+  tempoDecorridoEmSegundos = 900;
+  alterandoContexto('descanso-longo');
+  longoBt.classList.add('active')
 });
- function alterandoContexto(contexto) {
+
+function alterandoContexto(contexto) {
+  mostrarTempoNaTela(contexto)
   botoes.forEach(botao => botao.classList.remove('active'));
-    html.setAttribute('data-contexto', contexto);
-    imagemPrincipal.src = `./imagens/${contexto}.png`;
+  html.setAttribute('data-contexto', contexto);
+  imagemPrincipal.src = `./imagens/${contexto}.png`;
    
     switch (contexto) {
-        case 'foco':
-          titulo.innerHTML = `Otimize sua produtividade,<br>
-              <strong class="app__title-strong">mergulhe no que importa.</strong>`
+      case 'foco':
+        titulo.innerHTML = `Otimize sua produtividade,<br>
+            <strong class="app__title-strong">mergulhe no que importa.</strong>`
           break;
-        case 'descanso-curto':
-          titulo.innerHTML = `Que tal dar uma respirada? <strong class="app__title-strong"> Faça uma pausa curta!</strong>`
+      case 'descanso-curto':
+        titulo.innerHTML = `Que tal dar uma respirada? <strong class="app__title-strong"> Faça uma pausa curta!</strong>`
           break;
-        case 'descanso-longo':
-          titulo.innerHTML = `Hora de voltar à superfície. <strong class="app__title-strong"> Faça uma pausa longa.</strong>`
+      case 'descanso-longo':
+        titulo.innerHTML = `Hora de voltar à superfície. <strong class="app__title-strong"> Faça uma pausa longa.</strong>`
           break;
-        default:
+      default:
           break;
     }
- }
+}
 
- musicaFocoInput.addEventListener('change', () => {musicaFocoInput.checked ? musica.play(): musica.pause();});
+musicaFocoInput.addEventListener('change', () => {musicaFocoInput.checked ? musica.play(): musica.pause();});
 
 const contagemRegressiva = () => {
   if (tempoDecorridoEmSegundos <= 0) {
@@ -68,36 +72,34 @@ const contagemRegressiva = () => {
   tempoDecorridoEmSegundos -= 1;
   // console.log("temporizador: " + tempoDecorridoEmSegundos);
   mostrarTempoNaTela()
- }
+}
 
- startPauseBt.addEventListener('click', iniciarOuPausar); 
+startPauseBt.addEventListener('click', iniciarOuPausar); 
   
- function iniciarOuPausar() {
+function iniciarOuPausar() {
   if (intervaloId) {
-      musicaPause.play();
-      zerar();
-      return
+    musicaPause.play();
+    zerar();
+    return
   }
   musicaPlay.play();
   intervaloId = setInterval(contagemRegressiva,1000); //milissegundos
   iniciarOuPausarBt.innerHTML = 'Pausar';
   iconeBt.src = './imagens/pause.png';
-  
-  
- }
+}
 
- function zerar() {
-  
+function zerar() {
   clearInterval(intervaloId);
   iniciarOuPausarBt.innerHTML = 'Começar';
   iconeBt.src = './imagens/play_arrow.png';
   intervaloId = null;
- }
+}
 
- function mostrarTempoNaTela() {
-  const tempo = tempoDecorridoEmSegundos;
-  timer.innerHTML = `${tempo}`
+function mostrarTempoNaTela() {
+  const tempo = new Date(tempoDecorridoEmSegundos * 1000) //*1000 pq é milissegundos
+  const tempoFormatado = tempo.toLocaleTimeString('pt-BR', {minute: '2-digit', second: '2-digit'})
+  timer.innerHTML = `${tempoFormatado}`
 
- }
+}
 
- mostrarTempoNaTela();
+mostrarTempoNaTela();
