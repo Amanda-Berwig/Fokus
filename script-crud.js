@@ -2,10 +2,14 @@ const btnAddTarefa = document.querySelector(".app__button--add-task");
 const formAddTarefa = document.querySelector(".app__form-add-task");
 const textArea = document.querySelector(".app__form-textarea");
 const ulTarefas = document.querySelector(".app__section-task-list");
-
+const btnCancelar = document.querySelector(".app__form-footer__button--cancel");
 
 const tarefas = JSON.parse(localStorage.getItem("tarefas")) || []; // JSON.parse faz o processo inverso do stringfy
 // e se não tiver nada no local storage, nenhuma tarefa, ele retorna um array vazio.
+
+function atualizarTarefas() {
+    localStorage.setItem("tarefas", JSON.stringify(tarefas)); //API JSON que transforma o array de objetos em string
+}
 
 function criarElementoTarefa(tarefa) {
     const li = document.createElement("li");
@@ -24,6 +28,17 @@ function criarElementoTarefa(tarefa) {
     
     const button = document.createElement("button");
     button.classList.add("app_button-edit");
+
+    button.addEventListener("click", modificarTarefa);
+
+function modificarTarefa() {
+    let tarefaEditada = prompt("Digite a nova descrição da tarefa");
+    if (tarefaEditada) {
+        paragrafo.textContent = tarefaEditada;
+        tarefa.descricao = tarefaEditada;
+        atualizarTarefas();
+    } 
+    }
     
     const imagemBotao = document.createElement("img");
     imagemBotao.src = "/imagens/edit.png"
@@ -48,7 +63,7 @@ formAddTarefa.addEventListener("submit", (evento) => {
     tarefas.push(tarefa);
     const elementoTarefa = criarElementoTarefa(tarefa);
     ulTarefas.append(elementoTarefa);
-    localStorage.setItem('tarefas',JSON.stringify(tarefas)); //API JSON que transforma o array de objetos em string
+atualizarTarefas();
     textArea.value = "";
     formAddTarefa.classList.add("hidden");
     
@@ -60,8 +75,10 @@ tarefas.forEach(tarefa => {
     
 });
 
-button.addEventListener("click", modificarTarefa);
+btnCancelar.addEventListener("click", () => {
+      textArea.value = "";
+    formAddTarefa.classList.add("hidden");
 
-function modificarTarefa() {
-    textArea.value ="";
-}
+})
+    
+ 
