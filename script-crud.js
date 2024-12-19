@@ -4,8 +4,10 @@ const textArea = document.querySelector(".app__form-textarea");
 const ulTarefas = document.querySelector(".app__section-task-list");
 const btnCancelar = document.querySelector(".app__form-footer__button--cancel");
 const paragrafoDescricaoTarefa = document.querySelector(".app__section-active-task-description");
+const btnRemoverTarefasConcluidas = document.querySelector("#btn-remover-concluidas");
+const btnRemoverTodasTarefas = document.querySelector("#btn-remover-todas");
 
-const tarefas = JSON.parse(localStorage.getItem("tarefas")) || []; // JSON.parse faz o processo inverso do stringfy
+let tarefas = JSON.parse(localStorage.getItem("tarefas")) || []; // JSON.parse faz o processo inverso do stringfy
 // e se não tiver nada no local storage, nenhuma tarefa, ele retorna um array vazio.
 
 let tarefaSelecionada = null;
@@ -118,5 +120,22 @@ document.addEventListener("focoFinalizado", () => {
         tarefaSelecionada.completa = true;
         atualizarTarefas(liTarefaSelecionada)
 })
+
+btnRemoverTarefasConcluidas.onclick = () => {
+    const seletor = (".app__section-task-list-item-complete");
+    document.querySelectorAll(seletor).forEach (elemento => {
+        elemento.remove();
+    })
+    tarefas = tarefas.filter(tarefa => !tarefa.completa);
+    atualizarTarefas();
+};
     
- 
+btnRemoverTodasTarefas.onclick = () => {
+    const seletor = (".app__section-task-list-item");
+    document.querySelectorAll(seletor).forEach (elemento => {
+        elemento.remove();
+    })
+    tarefas.length = 0;
+    paragrafoDescricaoTarefa.textContent = "";
+    atualizarTarefas();
+};
