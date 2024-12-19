@@ -9,6 +9,8 @@ const tarefas = JSON.parse(localStorage.getItem("tarefas")) || []; // JSON.parse
 // e se não tiver nada no local storage, nenhuma tarefa, ele retorna um array vazio.
 
 let tarefaSelecionada = null;
+let liTarefaSelecionada = null;
+
 function atualizarTarefas() {
     localStorage.setItem("tarefas", JSON.stringify(tarefas)); //API JSON que transforma o array de objetos em string
 }
@@ -50,21 +52,30 @@ function modificarTarefa() {
     li.append(paragrafo);
     li.append(button);
 
-    li.onclick = () => {
-        document.querySelectorAll(".app__section-task-list-item-active").forEach(elemento => {
-            elemento.classList.remove("app__section-task-list-item-active");
-        });
-
-        if (tarefaSelecionada == tarefa) { //limpa a tarefa selecionada se eu clicar nela novamente, desseleciona ela
-            paragrafoDescricaoTarefa.textContent = "";
-            tarefaSelecionada = null;
-            return
+    if (tarefa.completa) {
+        li.classList.add("app__section-task-list-item-complete");
+        button.setAttribute("disabled", "disabled");
+    } else  {
+        li.onclick = () => {
+            document.querySelectorAll(".app__section-task-list-item-active").forEach(elemento => {
+                elemento.classList.remove("app__section-task-list-item-active");
+            });
+    
+            if (tarefaSelecionada == tarefa) { //limpa a tarefa selecionada se eu clicar nela novamente, desseleciona ela
+                paragrafoDescricaoTarefa.textContent = "";
+                tarefaSelecionada = null;
+                liTarefaSelecionada = null;
+                return
+            }
+            tarefaSelecionada = tarefa;
+            liTarefaSelecionada =li
+            paragrafoDescricaoTarefa.textContent = tarefa.descricao;
+            
+            li.classList.add("app__section-task-list-item-active");
         }
-        tarefaSelecionada = tarefa;
-        paragrafoDescricaoTarefa.textContent = tarefa.descricao;
-        
-        li.classList.add("app__section-task-list-item-active");
+
     }
+
    
     return li;
 }
@@ -97,6 +108,15 @@ btnCancelar.addEventListener("click", () => {
       textArea.value = "";
     formAddTarefa.classList.add("hidden");
 
+})
+
+document.addEventListener("focoFinalizado", () => {
+    if(tarefaSelecionada && liTarefaSelecionada)
+        liTarefaSelecionada.classList.remove("app__section-task-list-item-active");
+        liTarefaSelecionada.classList.add("app__section-task-list-item-complete")
+        liTarefaSelecionada.querySelector('button').setAttribute("disabled", "disabled");
+        tarefaSelecionada.completa = true;
+        atualizarTarefas(liTarefaSelecionada)
 })
     
  
